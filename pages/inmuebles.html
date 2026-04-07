@@ -3,37 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo | La Inmaculada</title>
+    <title>Catálogo | Inmaculada</title>
     <link rel="stylesheet" href="../style.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-light">
-
+<body>
     <aside class="sidebar">
-        <div class="brand">
-            <div class="logo-icon"><i class="fas fa-leaf"></i></div>
-            <span>Inmobiliaria</span>
-        </div>
+        <div class="brand"><i class="fas fa-leaf"></i> <span>Inmaculada</span></div>
         <nav>
-            <a href="../index.html" class="nav-item"><i class="fas fa-th-large"></i> Panel Principal</a>
-            <a href="inmuebles.html" class="nav-item active"><i class="fas fa-building"></i> Mis Inmuebles</a>
+            <a href="../index.html" class="nav-item"><i class="fas fa-th-large"></i> <span>Admin</span></a>
+            <a href="inmuebles.html" class="nav-item active"><i class="fas fa-building"></i> <span>Catálogo</span></a>
         </nav>
     </aside>
 
     <main class="content">
         <header class="header">
             <div>
-                <h1>Catálogo de Propiedades</h1>
-                <p class="subtitle">Explora nuestras ofertas exclusivas en Bucaramanga y Girón</p>
+                <h1>Nuestras Propiedades</h1>
+                <p style="color:var(--text-light)">Encuentra tu próximo hogar con nosotros</p>
             </div>
-            <div class="filter-badge">3 Propiedades Disponibles</div>
         </header>
-
-        <div class="grid-catalogo" id="catalogoInmuebles">
-            </div>
+        <div class="grid-catalogo" id="catalogoInmuebles"></div>
     </main>
-
     <script src="../main.js"></script>
 </body>
 </html>
