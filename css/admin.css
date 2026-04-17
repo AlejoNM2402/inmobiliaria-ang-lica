@@ -1,0 +1,46 @@
+/* admin.css - Diseño para administración */
+body { 
+    background: #f1f5f9; display: flex; min-height: 100vh; 
+}
+
+/* Sidebar lateral */
+.sidebar {
+    width: 260px; background: #ffffff; border-right: 1px solid #e2e8f0;
+    padding: 30px 20px; position: sticky; top: 0; height: 100vh;
+}
+
+.nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 14px;
+    color: #64748b; text-decoration: none; font-weight: 600;
+    border-radius: 12px; transition: 0.3s;
+}
+
+.nav-item.active { background: #6366f1; color: white; }
+
+/* Contenido Principal */
+.content { flex: 1; padding: 40px; }
+
+/* Acciones en la imagen */
+.admin-actions {
+    position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;
+}
+
+.btn-action {
+    width: 36px; height: 36px; border-radius: 10px; border: none;
+    cursor: pointer; color: white; display: flex; align-items: center; justify-content: center;
+}
+.editar { background: #6366f1; }
+.borrar { background: #ef4444; }
+
+/* Botón Nuevo */
+.btn-nuevo {
+    background: #6366f1; color: white; padding: 12px 24px;
+    border-radius: 12px; border: none; font-weight: 700; cursor: pointer;
+    margin-bottom: 30px; display: inline-flex; align-items: center; gap: 10px;
+}
+
+/* Responsive Admin */
+@media (max-width: 900px) {
+    .sidebar { width: 80px; padding: 20px 10px; }
+    .sidebar span { display: none; } /* Ocultar texto del menú */
+}

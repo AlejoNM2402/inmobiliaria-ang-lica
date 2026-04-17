@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Inmobiliaria Inmaculada</title>
+    
+    <link rel="stylesheet" href="../css/admin.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand"><i class="fas fa-leaf"></i> <span>Inmaculada</span></div>
+        <nav>
+            <a href="index.html" class="nav-item active"><i class="fas fa-tools"></i> <span>Gestión</span></a>
+            <a href="pages/inmuebles.html" class="nav-item"><i class="fas fa-eye"></i> <span>Catálogo</span></a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="header">
+            <h1>Mis Propiedades</h1>
+            <button class="btn-primary" onclick="abrirModal()">+ Nuevo Inmueble</button>
+        </header>
+
+        <div class="grid-inmuebles" id="gridInmuebles"></div>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="modalTitle">Nueva Propiedad</h2>
+                <button onclick="cerrarModal()" style="background:none; border:none; font-size: 1.8rem; cursor:pointer; color: #64748b;">&times;</button>
+            </div>
+
+            <form id="formInmueble">
+                <input type="hidden" id="inmuebleId">
+                
+                <label>Información Básica</label>
+                <input type="text" id="titulo" placeholder="Título del anuncio (Ej: Casa de lujo en Girón)" required>
+                <textarea id="descripcion" placeholder="Descripción detallada del inmueble"></textarea>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label><small>Precio (COP)</small></label>
+                        <input type="number" id="precio" placeholder="Ej: 250000000" required>
+                    </div>
+                    <div>
+                        <label><small>Área m²</small></label>
+                        <input type="number" id="metraje" placeholder="Ej: 120">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label><small>Habs</small></label>
+                        <input type="number" id="habitaciones" placeholder="0">
+                    </div>
+                    <div>
+                        <label><small>Baños</small></label>
+                        <input type="number" id="baños" placeholder="0">
+                    </div>
+                    <div>
+                        <label><small>Estrato</small></label>
+                        <input type="number" id="estrato" placeholder="0">
+                    </div>
+                </div>
+
+                <label>Tipo de Inmueble</label>
+                <select id="tipo_inmueble">
+                    <option value="Apartamento">Apartamento</option>
+                    <option value="Casa">Casa</option>
+                    <option value="Finca">Finca</option>
+                    <option value="Lote">Lote</option>
+                    <option value="Local">Local</option>
+                </select>
+
+                <label>Características Adicionales</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: #f8fafc; padding: 10px; border-radius: 8px;">
+                    <label style="font-weight: normal; font-size: 0.9rem;"><input type="checkbox" id="conjunto_cerrado"> Conjunto Cerrado</label>
+                    <label style="font-weight: normal; font-size: 0.9rem;"><input type="checkbox" id="seguridad_privada"> Seguridad 24/7</label>
+                    <label style="font-weight: normal; font-size: 0.9rem;"><input type="checkbox" id="parqueadero"> Parqueadero</label>
+                    <label style="font-weight: normal; font-size: 0.9rem;"><input type="checkbox" id="paga_administracion"> Admón</label>
+                </div>
+
+                <label>Ubicación (Coordenadas Maps)</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="number" step="any" id="lat" placeholder="Latitud">
+                    <input type="number" step="any" id="lng" placeholder="Longitud">
+                </div>
+
+                <label style="margin-top: 15px;">Imágenes de la propiedad</label>
+                <input type="file" id="fileIn" multiple accept="image/*" class="file-input">
+                <div id="previewStrip" class="preview-container" style="display: flex; gap: 8px; overflow-x: auto; padding: 10px 0;">
+                    </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 20px; padding: 15px;">
+                    <i class="fas fa-save"></i> Publicar / Guardar Inmueble
+                </button>
+            </form>
+        </div>
+    </div>
+
+<div id="modalPreview" class="modal" style="display:none; background: rgba(0,0,0,0.9); z-index: 2000;">
+    <div class="modal-content" style="max-width: 950px; padding: 0; position: relative; border-radius: 24px;">
+        <button onclick="cerrarPreview()" class="close-lux-btn">&times;</button>
+        
+        <div id="previewContent">
+            </div>
+
+        <div style="padding: 20px; background: #f8fafc; text-align: center; border-radius: 0 0 24px 24px;">
+            <button class="btn-primary" onclick="cerrarPreview()" style="background: #64748b;">Cerrar Vista Previa</button>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="../js/admin.js"></script>
+
+</body>
+</html>

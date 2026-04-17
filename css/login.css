@@ -1,0 +1,169 @@
+/* ============================================================
+    1. RESET Y VARIABLES
+   ============================================================ */
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --white: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --radius: 24px;
+    --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg-gradient);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: var(--text-main);
+}
+
+/* ============================================================
+    2. TARJETA DE LOGIN
+   ============================================================ */
+.login-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 420px;
+    padding: 50px 40px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.brand-login h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 5px;
+    color: var(--text-main);
+}
+
+.brand-login p {
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 35px;
+}
+
+/* ============================================================
+    3. FORMULARIO Y INPUTS
+   ============================================================ */
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-main);
+    padding-left: 4px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text-main);
+    background: #f8fafc;
+    transition: var(--transition);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+/* ============================================================
+    4. BOTONES Y ACCIONES
+   ============================================================ */
+.btn-login {
+    width: 100%;
+    background: var(--primary);
+    color: var(--white);
+    padding: 16px;
+    border: none;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+}
+
+.btn-login:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 30px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.back-home:hover {
+    color: var(--primary);
+}
+
+/* ============================================================
+    5. MENSAJES DE ERROR/ÉXITO
+   ============================================================ */
+#loginMessage {
+    margin-top: 20px;
+    min-height: 40px;
+}
+
+/* ============================================================
+    6. RESPONSIVIDAD (MÓVIL)
+   ============================================================ */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 40px 25px;
+        border-radius: 0; /* Pantalla completa en móviles pequeños si prefieres */
+        box-shadow: none;
+        background: transparent;
+    }
+    
+    body {
+        background: var(--white); /* Fondo blanco en móvil para claridad */
+    }
+}
