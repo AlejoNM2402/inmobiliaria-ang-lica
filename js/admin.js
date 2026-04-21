@@ -24,11 +24,11 @@ async function loadAdminData() {
 }
 
 function updateStats(lista) {
-  const total  = lista.length;
-  const casas  = lista.filter(i => i.tipo_inmueble === 'Casa').length;
-  const apts   = lista.filter(i => i.tipo_inmueble === 'Apartamento').length;
+  const total   = lista.length;
+  const casas   = lista.filter(i => i.tipo_inmueble === 'Casa').length;
+  const apts    = lista.filter(i => i.tipo_inmueble === 'Apartamento').length;
   const precios = lista.filter(i => i.precio).map(i => i.precio);
-  const prom   = precios.length
+  const prom    = precios.length
     ? Math.round(precios.reduce((a, b) => a + b, 0) / precios.length) : 0;
 
   document.getElementById('statTotal').textContent    = total;
@@ -59,11 +59,16 @@ function renderAdmin(lista) {
   grid.innerHTML = lista.map((item, i) => {
     const img    = item.imagenes?.[0] || '';
     const precio = item.precio ? '$' + Number(item.precio).toLocaleString('es-CO') : 'Consultar';
-    const chips  = [
+
+    // Construir ubicación legible
+    const ubicacion = [item.barrio, item.zona].filter(Boolean).join(', ');
+
+    const chips = [
       item.habitaciones ? `<span class="chip"><i class="fas fa-bed"></i> ${item.habitaciones}</span>` : '',
       item.baños         ? `<span class="chip"><i class="fas fa-bath"></i> ${item.baños}</span>` : '',
       item.metraje       ? `<span class="chip"><i class="fas fa-ruler-combined"></i> ${item.metraje}m²</span>` : '',
       item.estrato       ? `<span class="chip">E${item.estrato}</span>` : '',
+      ubicacion          ? `<span class="chip"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(ubicacion)}</span>` : '',
     ].filter(Boolean).join('');
 
     return `
@@ -137,12 +142,12 @@ function initUploadLogic() {
       fd.append('upload_preset', PRESET);
       try {
         const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-          method: 'POST', body: fd
+          method: 'POST', body: fd,
         });
         const data = await res.json();
         if (data.secure_url) currentImages.push(data.secure_url);
       } catch { showToast('Error al subir una imagen', 'error'); }
-      finally { uploadingCount--; }
+      finally  { uploadingCount--; }
     }));
 
     renderPreviews();
@@ -156,13 +161,13 @@ function renderPreviews() {
 
   const existentes = currentImages.map((url, i) => `
     <div class="preview-thumb">
-      <img src="${url}" alt="img ${i+1}">
+      <img src="${url}" alt="img ${i + 1}">
       <button type="button" class="del" onclick="removeImg(${i})">×</button>
     </div>`).join('');
 
   const placeholders = Array.from({ length: uploadingCount }).map(() => `
     <div class="preview-thumb">
-      <div style="width:72px;height:72px;border-radius:6px;background:var(--ink3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center">
+      <div style="width:72px;height:72px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center">
         <i class="fas fa-spinner fa-spin" style="color:var(--text3);font-size:16px"></i>
       </div>
     </div>`).join('');
@@ -202,8 +207,9 @@ window.submitForm = async () => {
     seguridad_privada:   document.getElementById('seguridad_privada').checked,
     parqueadero:         document.getElementById('parqueadero').checked,
     paga_administracion: document.getElementById('paga_administracion').checked,
-    lat: parseFloat(document.getElementById('lat').value) || null,
-    lng: parseFloat(document.getElementById('lng').value) || null,
+    // Ubicación por zona y barrio (reemplaza lat/lng)
+    zona:   document.getElementById('zona').value   || null,
+    barrio: document.getElementById('barrio').value.trim() || null,
   };
 
   const id = document.getElementById('inmuebleId').value;
@@ -230,17 +236,17 @@ window.editItem = async (id) => {
 
   abrirModal('Editar Propiedad', `ID #${id}`);
 
-  document.getElementById('inmuebleId').value          = data.id;
-  document.getElementById('titulo').value              = data.titulo        || '';
-  document.getElementById('descripcion').value         = data.descripcion   || '';
-  document.getElementById('precio').value              = data.precio        || '';
-  document.getElementById('estrato').value             = data.estrato       || '';
-  document.getElementById('habitaciones').value        = data.habitaciones  || '';
-  document.getElementById('baños').value               = data.baños         || '';
-  document.getElementById('metraje').value             = data.metraje       || '';
-  document.getElementById('tipo_inmueble').value       = data.tipo_inmueble || 'Apartamento';
-  document.getElementById('lat').value                 = data.lat           || '';
-  document.getElementById('lng').value                 = data.lng           || '';
+  document.getElementById('inmuebleId').value    = data.id;
+  document.getElementById('titulo').value        = data.titulo        || '';
+  document.getElementById('descripcion').value   = data.descripcion   || '';
+  document.getElementById('precio').value        = data.precio        || '';
+  document.getElementById('estrato').value       = data.estrato       || '';
+  document.getElementById('habitaciones').value  = data.habitaciones  || '';
+  document.getElementById('baños').value         = data.baños         || '';
+  document.getElementById('metraje').value       = data.metraje       || '';
+  document.getElementById('tipo_inmueble').value = data.tipo_inmueble || 'Apartamento';
+  document.getElementById('zona').value          = data.zona          || '';
+  document.getElementById('barrio').value        = data.barrio        || '';
 
   document.getElementById('conjunto_cerrado').checked    = !!data.conjunto_cerrado;
   document.getElementById('seguridad_privada').checked   = !!data.seguridad_privada;
