@@ -24,7 +24,7 @@ async function loadInmuebles() {
   }
 
 
-  
+
   allData = data || [];
   initChipGroups();
   applyFilters();
@@ -453,3 +453,46 @@ function escapeHtml(str) {
 
 //LISTENERS
 
+// ══════════════════════════════════════════════════
+//  FIX PARA ALTURA EN MÓVIL (iOS/Android)
+// ══════════════════════════════════════════════════
+
+function setModalHeight() {
+  const dialog = document.querySelector('.dialog-lux');
+  if (!dialog) return;
+  
+  // Solo en móvil
+  if (window.innerWidth <= 640) {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+    
+    // Forzar altura en iOS
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+      dialog.style.height = `${window.innerHeight}px`;
+      dialog.style.maxHeight = `${window.innerHeight}px`;
+    }
+  }
+}
+
+// Ejecutar en resize y orientación
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(setModalHeight, 250);
+});
+
+window.addEventListener('orientationchange', () => {
+  setTimeout(setModalHeight, 300);
+});
+
+// Ejecutar cuando se abre el modal
+const originalVerDetalle = window.verDetalle;
+window.verDetalle = async function(id) {
+  await originalVerDetalle(id);
+  setTimeout(setModalHeight, 100);
+};
+
+// Inicializar
+if (window.innerWidth <= 640) {
+  setModalHeight();
+}
