@@ -612,100 +612,198 @@ body {
 /* ══════════════════════════════════════════════════
    MODAL / DIALOG
    ══════════════════════════════════════════════════ */
+/* ✅ MODAL: centrado nativo del <dialog> */
 .dialog-lux {
-  border: none; padding: 0; border-radius: var(--r-xl);
+  border: none;
+  padding: 0;
+  border-radius: var(--r-xl);
   width: min(92vw, 880px);
-  max-height: 86vh; overflow: hidden;
+  max-height: 86vh;
+  overflow: hidden;
   box-shadow: 0 32px 80px rgba(0,0,0,.25);
   animation: dialogIn .3s var(--spring) both;
+  /* ❌ ELIMINAR: position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); */
+  /* ✅ El dialog se centra solo con margin: auto */
   margin: auto;
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
 }
-.dialog-lux[open] { transform: translate(-50%, -50%); }
-.dialog-lux::backdrop { background: rgba(15,23,42,.62); backdrop-filter: blur(10px); }
+
+/* ✅ Solo animación de entrada, sin interferir con el centrado */
+.dialog-lux[open] {
+  /* No poner transform aquí, rompe el centrado nativo */
+}
+
+.dialog-lux::backdrop {
+  background: rgba(15,23,42,.62);
+  backdrop-filter: blur(10px);
+}
+
 @keyframes dialogIn {
-  from { opacity:0; transform: translate(-50%, -46%); }
-  to   { opacity:1; transform: translate(-50%, -50%); }
+  from { opacity: 0; transform: scale(.96) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
+
+/* ✅ CONTENEDOR INTERNO: flex sin alturas fijas problemáticas */
 .dialog-container {
-  display: flex; flex-direction: column;
-  width: 100%; height: 86vh; max-height: 86vh;
-  position: relative; background: var(--white);
-  border-radius: var(--r-xl); overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 86vh; /* Solo max-height, no height fijo */
+  position: relative;
+  background: var(--white);
+  border-radius: var(--r-xl);
+  overflow: hidden;
 }
+
 .btn-cerrar {
-  position: absolute; top: 12px; right: 12px;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,.95); border: 1px solid rgba(0,0,0,.1);
-  font-size: 18px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 20; transition: all var(--t); color: var(--text2); line-height: 1;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.95);
+  border: 1px solid rgba(0,0,0,.1);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  transition: all var(--t);
+  color: var(--text2);
+  line-height: 1;
   box-shadow: 0 2px 8px rgba(0,0,0,.1);
 }
 .btn-cerrar:hover { background: #fff; color: var(--text); }
+
+/* ✅ GRID: sin overflow hidden para permitir scroll interno */
 .dialog-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  flex: 1; min-height: 0; overflow: hidden; height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+  min-height: 0; /* ✅ Clave para que flex hijos puedan hacer scroll */
+  overflow: hidden;
 }
+
+/* ✅ MÓVIL: todo en columna con scroll general */
 @media (max-width: 680px) {
-  .dialog-lux { width: 96vw; max-height: 92vh; }
-  .dialog-container { height: 92vh; max-height: 92vh; }
-  .dialog-grid { grid-template-columns: 1fr; overflow-y: auto; }
+  .dialog-lux {
+    width: 96vw;
+    max-height: 92vh;
+  }
+  .dialog-container {
+    max-height: 92vh;
+  }
+  .dialog-grid {
+    grid-template-columns: 1fr;
+    overflow-y: auto; /* ✅ Scroll en móvil */
+  }
+  .dialog-gallery {
+    flex: 0 0 auto;
+    max-height: 45vh; /* ✅ Limitar galería en móvil */
+  }
+  .main-img {
+    height: 230px;
+    flex: none;
+  }
 }
+
 .dialog-gallery {
-  background: #0f172a; display: flex;
-  flex-direction: column; overflow: hidden; min-height: 0;
+  background: #0f172a;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
+
 .main-img {
-  width: 100%; flex: 1; min-height: 0;
-  object-fit: cover; display: block; transition: opacity .2s var(--ease);
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  object-fit: cover;
+  display: block;
+  transition: opacity .2s var(--ease);
 }
-@media (max-width: 680px) {
-  .dialog-gallery { flex: 0 0 auto; }
-  .main-img { height: 230px; flex: none; }
-}
+
 .no-img-placeholder {
-  flex: 1; display: flex; align-items: center; justify-content: center;
-  color: rgba(255,255,255,.3); font-size: 48px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,.3);
+  font-size: 48px;
 }
+
 .thumb-list {
-  display: flex; gap: 6px; padding: 10px 12px;
-  overflow-x: auto; background: rgba(0,0,0,.4); flex-shrink: 0;
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  background: rgba(0,0,0,.4);
+  flex-shrink: 0;
 }
 .thumb-list::-webkit-scrollbar { height: 3px; }
 .thumb-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.25); border-radius: 2px; }
+
 .thumb {
-  width: 64px; height: 52px; object-fit: cover; border-radius: 6px;
-  cursor: pointer; opacity: .55; border: 2px solid transparent;
-  flex-shrink: 0; transition: all var(--t);
+  width: 64px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: .55;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+  transition: all var(--t);
 }
 .thumb:hover { opacity: .85; }
 .thumb.thumb-active { opacity: 1; border-color: var(--blue); }
+
+/* ✅ INFO: scroll independiente en desktop */
 .dialog-info {
-  padding: 24px 22px 20px; overflow-y: auto;
-  -webkit-overflow-scrolling: touch; display: flex; flex-direction: column;
+  padding: 24px 22px 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* ✅ Necesario para que el scroll funcione dentro de flex/grid */
 }
 .dialog-info::-webkit-scrollbar { width: 4px; }
 .dialog-info::-webkit-scrollbar-thumb { background: var(--blue-pale); border-radius: 2px; }
+
+/* El resto de tu CSS queda igual (badge, specs, tags, etc.) */
 .badge-status {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 12px; background: #dcfce7; color: #15803d;
-  border-radius: 999px; font-size: 11px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .7px; margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  margin-bottom: 10px;
   align-self: flex-start;
 }
 .badge-status::before {
-  content: ''; width: 6px; height: 6px;
-  background: #22c55e; border-radius: 50%;
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: #22c55e;
+  border-radius: 50%;
   animation: blink 1.5s ease-in-out infinite;
 }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
 .dialog-info h2 {
   font-family: 'DM Serif Display', serif;
-  font-size: 19px; font-weight: 400;
-  color: var(--text); margin-bottom: 5px; line-height: 1.25;
+  font-size: 19px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 5px;
+  line-height: 1.25;
 }
 .location { font-size: 13px; color: var(--text3); display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
 .location i { color: var(--blue); }
@@ -746,3 +844,107 @@ body {
   box-shadow: 0 4px 14px rgba(37,211,102,.3); margin-top: auto;
 }
 .btn-wpp-dialog:hover { background: #1ebe5a; transform: translateY(-1px); }
+
+/* Asegurar que specs-grid-full sea visible */
+.specs-grid-full {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 16px 0;
+  padding: 0;
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  background: var(--surface, #f8f9fa);
+  border: 1px solid var(--border, #e9ecef);
+  border-radius: var(--r-md, 8px);
+  text-align: center;
+}
+
+.spec-item i {
+  font-size: 18px;
+  color: var(--blue, #2563eb);
+}
+
+.spec-item strong {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text, #1f2937);
+}
+
+.spec-item small {
+  font-size: 11px;
+  color: var(--text3, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Tags de extras visibles */
+.tags-extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.tag-extra {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--surface, #f0f9ff);
+  border: 1px solid var(--border, #dbeafe);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--text2, #374151);
+  font-weight: 500;
+}
+
+.tag-extra i {
+  color: var(--blue, #2563eb);
+  font-size: 12px;
+}
+
+/* Información adicional */
+.extra-info {
+  margin: 16px 0;
+  border-top: 1px solid var(--border, #e5e7eb);
+  padding-top: 12px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.info-row span {
+  color: var(--text2, #6b7280);
+}
+
+.info-row strong {
+  color: var(--text, #1f2937);
+  font-weight: 600;
+}
+
+/* Responsive para móviles */
+@media (max-width: 680px) {
+  .specs-grid-full {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .spec-item {
+    padding: 10px 6px;
+  }
+  
+  .spec-item strong {
+    font-size: 14px;
+  }
+}

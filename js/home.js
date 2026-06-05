@@ -157,7 +157,12 @@ function buildCard(item, i) {
 window.verPreview = async (id) => {
   const { data, error } = await _supabase
     .from('Inmuebles').select('*').eq('id', id).single();
-  if (error || !data) return;
+  if (error || !data) {
+    console.error('Error:', error);
+    return;
+  }
+
+  console.log('Datos del inmueble:', data); // Debug
 
   const dialog    = document.getElementById('modalInmueble');
   const container = document.getElementById('dialogContent');
@@ -166,6 +171,7 @@ window.verPreview = async (id) => {
   const imgPrin   = fotos[0] || '';
   const ubicacion = [data.barrio, data.zona].filter(Boolean).join(', ') || 'Bucaramanga, Santander';
 
+  // Miniaturas
   const miniaturas = fotos.length > 1
     ? fotos.map((f, idx) => `
         <img src="${f}"
@@ -174,33 +180,75 @@ window.verPreview = async (id) => {
              onclick="cambiarFoto(this, '${f}')">`).join('')
     : '';
 
-  const specs = [
-    data.habitaciones ? `<div class="spec-item"><i class="fas fa-bed"></i><strong>${data.habitaciones}</strong><small>Habitaciones</small></div>` : '',
-    data.baños         ? `<div class="spec-item"><i class="fas fa-bath"></i><strong>${data.baños}</strong><small>Baños</small></div>`               : '',
-    data.metraje       ? `<div class="spec-item"><i class="fas fa-ruler-combined"></i><strong>${data.metraje}m²</strong><small>Área</small></div>`  : '',
-    data.estrato       ? `<div class="spec-item"><i class="fas fa-layer-group"></i><strong>${data.estrato}</strong><small>Estrato</small></div>`    : '',
-  ].filter(Boolean).join('');
+  // ✅ CARACTERÍSTICAS PRINCIPALES - Grid visible
+  const specsHTML = `
+    <div class="specs-grid-full">
+      ${data.habitaciones ? `
+      <div class="spec-item">
+        <i class="fas fa-bed"></i>
+        <strong>${data.habitaciones}</strong>
+        <small>Habitaciones</small>
+      </div>` : ''}
+      ${data.baños ? `
+      <div class="spec-item">
+        <i class="fas fa-bath"></i>
+        <strong>${data.baños}</strong>
+        <small>Baños</small>
+      </div>` : ''}
+      ${data.metraje ? `
+      <div class="spec-item">
+        <i class="fas fa-ruler-combined"></i>
+        <strong>${data.metraje}m²</strong>
+        <small>Área</small>
+      </div>` : ''}
+      ${data.estrato ? `
+      <div class="spec-item">
+        <i class="fas fa-layer-group"></i>
+        <strong>${data.estrato}</strong>
+        <small>Estrato</small>
+      </div>` : ''}
+    </div>
+  `;
 
-  const infoRows = [
-    `<div class="info-row"><span>Tipo de inmueble</span><strong>${data.tipo_inmueble || 'No especificado'}</strong></div>`,
-    data.paga_administracion
-      ? `<div class="info-row">
-           <span><i class="fas fa-file-invoice-dollar" style="color:var(--blue);margin-right:5px"></i>Administración</span>
-           <strong>${data.valor_administracion ? '$' + Number(data.valor_administracion).toLocaleString('es-CO') : 'Incluida'}</strong>
-         </div>`
-      : '',
-  ].filter(Boolean).join('');
+  // ✅ INFORMACIÓN ADICIONAL
+  const infoRowsHTML = `
+    <div class="extra-info">
+      <div class="info-row">
+        <span>Tipo de inmueble</span>
+        <strong>${data.tipo_inmueble || 'No especificado'}</strong>
+      </div>
+      ${data.paga_administracion ? `
+      <div class="info-row">
+        <span><i class="fas fa-file-invoice-dollar" style="color:var(--blue);margin-right:5px"></i>Administración</span>
+        <strong>${data.valor_administracion ? '$' + Number(data.valor_administracion).toLocaleString('es-CO') : 'Incluida'}</strong>
+      </div>` : ''}
+    </div>
+  `;
 
-  const extras = [
-    data.conjunto_cerrado  ? '<span class="tag-extra"><i class="fas fa-shield-alt"></i> Conjunto cerrado</span>'  : '',
-    data.seguridad_privada ? '<span class="tag-extra"><i class="fas fa-user-shield"></i> Seguridad 24/7</span>'   : '',
-    data.parqueadero       ? '<span class="tag-extra"><i class="fas fa-car"></i> Parqueadero</span>'               : '',
-  ].filter(Boolean).join('');
+  // ✅ EXTRAS Y COMODIDADES - Tags visibles
+  const extrasHTML = `
+    <div class="tags-extras">
+      ${data.conjunto_cerrado ? `
+      <span class="tag-extra">
+        <i class="fas fa-shield-alt"></i> Conjunto cerrado
+      </span>` : ''}
+      ${data.seguridad_privada ? `
+      <span class="tag-extra">
+        <i class="fas fa-user-shield"></i> Seguridad 24/7
+      </span>` : ''}
+      ${data.parqueadero ? `
+      <span class="tag-extra">
+        <i class="fas fa-car"></i> Parqueadero
+      </span>` : ''}
+    </div>
+  `;
 
+  // ✅ HTML COMPLETO DEL MODAL
   container.innerHTML = `
     <div class="dialog-container">
       <button onclick="document.getElementById('modalInmueble').close()" class="btn-cerrar">✕</button>
       <div class="dialog-grid">
+        <!-- Galería -->
         <div class="dialog-gallery">
           ${imgPrin
             ? `<img src="${imgPrin}" id="imgPrincipal" class="main-img" alt="${escapeHtml(data.titulo)}">`
@@ -208,19 +256,26 @@ window.verPreview = async (id) => {
           }
           ${miniaturas ? `<div class="thumb-list">${miniaturas}</div>` : ''}
         </div>
+        
+        <!-- Información -->
         <div class="dialog-info">
           <span class="badge-status">Disponible</span>
           <h2>${escapeHtml(data.titulo)}</h2>
           <p class="location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(ubicacion)}</p>
           <p class="price">$${Number(data.precio || 0).toLocaleString('es-CO')}</p>
-          ${specs ? `<div class="specs-grid-full">${specs}</div>` : ''}
-          <div class="extra-info">${infoRows}</div>
-          ${extras ? `<div class="tags-extras">${extras}</div>` : ''}
+          
+          <!-- CARACTERÍSTICAS - Esto es lo que faltaba -->
+          ${specsHTML}
+          
+          ${infoRowsHTML}
+          ${extrasHTML}
+          
           ${data.descripcion ? `
           <div class="desc-box">
             <h3>Descripción</h3>
-            <p>${data.descripcion}</p>
+            <p>${escapeHtml(data.descripcion)}</p>
           </div>` : ''}
+          
           <a href="https://wa.me/573156376306?text=Hola,%20solicito%20información%20sobre:%20${encodeURIComponent(data.titulo)}%20en%20${encodeURIComponent(ubicacion)}"
              target="_blank" class="btn-wpp-dialog">
             <i class="fab fa-whatsapp"></i> Preguntar por WhatsApp
@@ -232,6 +287,13 @@ window.verPreview = async (id) => {
   dialog.showModal();
 };
 
+// Función helper
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
 window.cambiarFoto = (thumb, src) => {
   const img = document.getElementById('imgPrincipal');
   if (!img) return;
